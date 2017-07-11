@@ -52,6 +52,12 @@ The following versions of PHP are supported by this version.
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
+## Usage
+
+> We are beaming Kirk and Spock from Enterprise to Earth.
+
+The [client](example/client.php) sends data to an [endpoint](example/endpoint.php) and process received data from endpoint.
+ 
 ## Testing
 
 ``` bash

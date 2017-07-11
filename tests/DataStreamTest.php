@@ -35,9 +35,11 @@ class DataStreamTest extends TestCase
         $dataStream = new $className($this->dto);
 
         $this->assertInstanceOf(DataStream::class, $dataStream);
-        $this->assertEquals(hash('adler32', $dataStream->getSerializer()->serialize($dataStream->getRaw())), $dataStream->getFingerprint());
-
+        $this->assertEquals($dataStream->getHasher()->hash($dataStream->getSerializer()->serialize($dataStream->getRaw()
+    )),
+        $dataStream->getFingerprint());
         $this->assertGreaterThan(time(), $dataStream->getExpirationTime());
+        $this->assertEquals($dataStream->getData(), (string)$dataStream);
 
         return $dataStream;
     }

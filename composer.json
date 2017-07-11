@@ -32,16 +32,6 @@
       "Hawkbit\\DataStream\\Tests\\": "tests/"
     }
   },
-  "provide": {
-    "psr/container-implementation": "~1.0",
-    "psr/http-message-implementation": "~1.0",
-    "psr/log-implementation": "~1.0"
-  },
-  "suggest": {
-    "symfony/http-kernel": "Dependency of symfony http foundation adapter",
-    "symfony/psr-http-message-bridge": "Dependency of symfony http foundation adapter",
-    "zendframework/zend-stratigility": "Dependency of stratigility middleware adapter"
-  },
   "scripts": {
     "test": [
       "cd vendor/phpunit/phpunit",

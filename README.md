@@ -57,7 +57,14 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 > We are beaming Kirk and Spock from Enterprise to Earth.
 
 The [client](example/client.php) sends data to an [endpoint](example/endpoint.php) and process received data from endpoint.
- 
+
+Let's beam Kirk and Spock, simply execute following commands in your preferred console:
+
+```bash
+$ cd example
+$ php client.php
+```
+
 ## Testing
 
 ``` bash

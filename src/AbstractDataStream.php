@@ -12,33 +12,43 @@ abstract class AbstractDataStream implements DataStream
     private $raw;
 
     /**
-     * @var \Hawkbit\DataStream\Hasher|null
-     */
-    private $hasher;
-    /**
      * @var \Hawkbit\DataStream\Compressor|null
      */
     private $compressor;
+
     /**
-     * @var \Hawkbit\DataStream\Serializer|null
+     * @var mixed
      */
-    private $serializer;
+    private $data;
+    /**
+     * @var \Hawkbit\DataStream\JwtConfig|null
+     */
+    private $jwtConfig;
 
     /**
      * DataStream constructor.
      *
      * @param $data
-     * @param \Hawkbit\DataStream\Serializer|null $serializer
-     * @param \Hawkbit\DataStream\Hasher|null $hasher
+     * @param \Hawkbit\DataStream\JwtConfig|null $jwtConfig
      * @param \Hawkbit\DataStream\Compressor|null $compressor
      */
-    public function __construct($data, Serializer $serializer = null, Hasher $hasher = null, Compressor $compressor =
-    null)
+    public function __construct($data, JwtConfig $jwtConfig = null,  Compressor $compressor = null)
     {
         $this->raw = $data;
-        $this->hasher = $hasher ?? new Adler32Hasher();
         $this->compressor = $compressor ?? new DeflateCompressor();
-        $this->serializer = $serializer ?? new JsonSerializer();
+        $this->jwtConfig = $jwtConfig ?? new JwtConfig();
+        $this->data = $this->decorateData($data);
+    }
+
+    /**
+     * Decorate input data to desired result
+     *
+     * @param $data
+     *
+     * @return mixed
+     */
+    protected function decorateData($data){
+        return $data;
     }
 
     /**
@@ -50,11 +60,11 @@ abstract class AbstractDataStream implements DataStream
     }
 
     /**
-     * @return \Hawkbit\DataStream\Hasher|null
+     * @return mixed
      */
-    public function getHasher()
+    public function getData()
     {
-        return $this->hasher;
+        return $this->data;
     }
 
     /**
@@ -66,18 +76,10 @@ abstract class AbstractDataStream implements DataStream
     }
 
     /**
-     * @return \Hawkbit\DataStream\Serializer|null
+     * @return \Hawkbit\DataStream\JwtConfig|null
      */
-    public function getSerializer()
+    public function getJwtConfig()
     {
-        return $this->serializer;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return $this->getData();
+        return $this->jwtConfig;
     }
 }

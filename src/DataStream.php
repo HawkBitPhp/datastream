@@ -4,6 +4,8 @@
 namespace Hawkbit\DataStream;
 
 
+use Firebase\JWT\JWT;
+
 interface DataStream
 {
 
@@ -15,12 +17,10 @@ interface DataStream
      * DataStream constructor.
      *
      * @param $data
-     * @param \Hawkbit\DataStream\Serializer|null $serializer
-     * @param \Hawkbit\DataStream\Hasher|null $hasher
+     * @param \Hawkbit\DataStream\JwtConfig|null $jwtConfig
      * @param \Hawkbit\DataStream\Compressor|null $compressor
      */
-    public function __construct($data, Serializer $serializer = null, Hasher $hasher = null, Compressor $compressor =
-    null);
+    public function __construct($data, JwtConfig $jwtConfig = null, Compressor $compressor = null);
 
     /**
      * get raw data
@@ -35,25 +35,6 @@ interface DataStream
      * @return mixed
      */
     public function getData();
-
-    /**
-     * Get MD5 Hash fingerprint
-     *
-     * @return string
-     */
-    public function getFingerprint(): string;
-
-    /**
-     * Get expiration for data
-     *
-     * @return int
-     */
-    public function getExpirationTime(): int;
-
-    /**
-     * @return string
-     */
-    public function __toString(): string;
 
 
 }

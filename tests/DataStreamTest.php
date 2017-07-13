@@ -31,17 +31,13 @@ class DataStreamTest extends TestCase
     {
         $className = DataStream::DEFAULT_OUTPUT;
 
-        /** @var OutputStream $dataStream */
-        $dataStream = new $className($this->dto);
+        /** @var OutputStream $outputStream */
+        $outputStream = new $className($this->dto);
 
-        $this->assertInstanceOf(DataStream::class, $dataStream);
-        $this->assertEquals($dataStream->getHasher()->hash($dataStream->getSerializer()->serialize($dataStream->getRaw()
-    )),
-        $dataStream->getFingerprint());
-        $this->assertGreaterThan(time(), $dataStream->getExpirationTime());
-        $this->assertEquals($dataStream->getData(), (string)$dataStream);
+        $this->assertInstanceOf(DataStream::class, $outputStream);
+        $this->assertEquals($outputStream->getData(), (string)$outputStream);
 
-        return $dataStream;
+        return $outputStream;
     }
 
     /**
@@ -60,7 +56,5 @@ class DataStreamTest extends TestCase
 
         $this->assertInstanceOf(DataStream::class, $inputStream);
         $this->assertEquals($this->dto, $inputStream->getData());
-        $this->assertGreaterThan(time(), $inputStream->getExpirationTime());
-        $this->assertEquals($outputStream->getFingerprint(), $inputStream->getFingerprint());
     }
 }

@@ -4,47 +4,61 @@
 namespace Hawkbit\DataStream;
 
 
+use Firebase\JWT\JWT;
+
 class OutputStream extends AbstractDataStream
 {
 
     /**
-     * Get converted data
+     * Convert data to jwt
+     *
+     * @param $data
      *
      * @return mixed
      */
-    public function getData()
+    protected function decorateData($data)
     {
-        // build message
-        $message = implode(DataStream::MESSAGE_ESCAPE_STRING, [
-                $this->getFingerprint(),
-                $this->getExpirationTime(),
-                $this->getSerializer()->serialize($this->getRaw())
-            ]);
+        // load config
+        $config = $this->getJwtConfig();
 
-        // compress message
-        $compressed = $this->getCompressor()->compress($message);
+        // Create the token as an array
+        $payload = [
+            'iat' => $config->getIssuedAt(),
+            // Issued at: time when the token was generated
+            'jti' => $config->getTokenId(),
+            // Json Token Id: an unique identifier for the token
+            'iss' => $config->getIssuer(),
+            // Issuer
+            'nbf' => $config->getNotBefore(),
+            // Not before
+            'exp' => $config->getExpireAt(),
+            // Expire
+            'data' => $data
+        ];
+
+        /*
+         * Encode the array to a JWT string.
+         * Second parameter is the key to encode the token.
+         *
+         * The output string can be validated at http://jwt.io/
+         */
+        $jwt = JWT::encode($payload,
+            $config->getSecret(),
+            $config->getAlg()
+        );
+
+        // compress jwt
+        $compressed = $this->getCompressor()->compress($jwt);
 
         // transform binary message into hexadecimal representation
         return base64_encode($compressed);
     }
 
     /**
-     * Get MD5 Hash fingerprint
-     *
      * @return string
      */
-    public function getFingerprint(): string
+    public function __toString(): string
     {
-        return $this->getHasher()->hash($this->getSerializer()->serialize($this->getRaw()));
-    }
-
-    /**
-     * Get expiration for data
-     *
-     * @return int
-     */
-    public function getExpirationTime(): int
-    {
-        return time() + 60;
+        return $this->getData();
     }
 }

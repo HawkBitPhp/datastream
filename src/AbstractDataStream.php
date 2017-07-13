@@ -20,17 +20,23 @@ abstract class AbstractDataStream implements DataStream
      * @var mixed
      */
     private $data;
+    /**
+     * @var \Hawkbit\DataStream\JwtConfig|null
+     */
+    private $jwtConfig;
 
     /**
      * DataStream constructor.
      *
      * @param $data
+     * @param \Hawkbit\DataStream\JwtConfig|null $jwtConfig
      * @param \Hawkbit\DataStream\Compressor|null $compressor
      */
-    public function __construct($data, Compressor $compressor = null)
+    public function __construct($data, JwtConfig $jwtConfig = null,  Compressor $compressor = null)
     {
         $this->raw = $data;
         $this->compressor = $compressor ?? new DeflateCompressor();
+        $this->jwtConfig = $jwtConfig ?? new JwtConfig();
         $this->data = $this->decorateData($data);
     }
 
@@ -67,5 +73,13 @@ abstract class AbstractDataStream implements DataStream
     public function getCompressor()
     {
         return $this->compressor;
+    }
+
+    /**
+     * @return \Hawkbit\DataStream\JwtConfig|null
+     */
+    public function getJwtConfig()
+    {
+        return $this->jwtConfig;
     }
 }

@@ -4,23 +4,23 @@
 namespace Hawkbit\DataStream;
 
 
+use Firebase\JWT\JWT;
+
 interface DataStream
 {
 
     const DEFAULT_INPUT = InputStream::class;
     const DEFAULT_OUTPUT = OutputStream::class;
     const MESSAGE_ESCAPE_STRING = "\0";
-    const DEFAULT_SECRET = 'datastream';
-    const DEFAULT_ISSUER = 'datastream';
-    const DEFAULT_ALG = 'HS512';
 
     /**
      * DataStream constructor.
      *
      * @param $data
+     * @param \Hawkbit\DataStream\JwtConfig|null $jwtConfig
      * @param \Hawkbit\DataStream\Compressor|null $compressor
      */
-    public function __construct($data, Compressor $compressor = null);
+    public function __construct($data, JwtConfig $jwtConfig = null, Compressor $compressor = null);
 
     /**
      * get raw data

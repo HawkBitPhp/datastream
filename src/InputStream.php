@@ -19,14 +19,19 @@ class InputStream extends AbstractDataStream implements DataStream
     protected function decorateData($data)
     {
 
+        // load jwt config
+        $config = $this->getJwtConfig();
+
         // compressed jwt
         $compressed = base64_decode($data);
 
         // get inflated jwt
         $jwt = $this->getCompressor()->uncompress($compressed);
+        $secret = $config->getSecret();
+        $alg = $config->getAlg();
 
         // decode data
-        $payload = JWT::decode($jwt, base64_encode(static::DEFAULT_SECRET), [static::DEFAULT_ALG]);
+        $payload = JWT::decode($jwt, $secret, [$alg]);
 
         // return payload data
         // workaround to get always assoc arrays instead of objects

@@ -18,48 +18,23 @@ class OutputStream extends AbstractDataStream
      */
     protected function decorateData($data)
     {
-        // build message
-        $tokenId = base64_encode(random_bytes(32));
-        $issuedAt = time();
+        // load config
+        $config = $this->getJwtConfig();
 
-        // gte $issuedAt
-        $notBefore = $issuedAt;
-
-        // Adding 60 seconds
-        $expire = $notBefore + 120;
-
-        // Retrieve the server name from config file
-        $issuer = static::DEFAULT_ISSUER;
-
-        /*
-         * Create the token as an array
-         */
+        // Create the token as an array
         $payload = [
-            'iat' => $issuedAt,
+            'iat' => $config->getIssuedAt(),
             // Issued at: time when the token was generated
-            'jti' => $tokenId,
+            'jti' => $config->getTokenId(),
             // Json Token Id: an unique identifier for the token
-            'iss' => $issuer,
+            'iss' => $config->getIssuer(),
             // Issuer
-            'nbf' => $notBefore,
+            'nbf' => $config->getNotBefore(),
             // Not before
-            'exp' => $expire,
+            'exp' => $config->getExpireAt(),
             // Expire
             'data' => $data
         ];
-
-        /*
-         * Extract the key, which is coming from the config file.
-         *
-         * Best suggestion is the key to be a binary string and
-         * store it in encoded in a config file.
-         *
-         * Can be generated with base64_encode(openssl_random_pseudo_bytes(64));
-         *
-         * keep it secure! You'll need the exact key to verify the
-         * token later.
-         */
-        $secretKey = base64_encode(static::DEFAULT_SECRET);
 
         /*
          * Encode the array to a JWT string.
@@ -67,13 +42,10 @@ class OutputStream extends AbstractDataStream
          *
          * The output string can be validated at http://jwt.io/
          */
-        $jwt = JWT::encode($payload, // Data to be encoded in the JWT
-            $secretKey, // The signing key
-            static::DEFAULT_ALG // Algorithm used to sign the token, see https://tools.ietf
-        //.org/html/draft-ietf-jose-json-web-algorithms-40#section-3
+        $jwt = JWT::encode($payload,
+            $config->getSecret(),
+            $config->getAlg()
         );
-
-        var_dump($jwt);
 
         // compress jwt
         $compressed = $this->getCompressor()->compress($jwt);
